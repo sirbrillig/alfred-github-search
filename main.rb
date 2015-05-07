@@ -151,8 +151,7 @@ class Github
     cached_results = @cache.read( search_string )
     return cached_results if cached_results and not cached_results.empty?
     login unless @logged_in
-    # github_search_string = "#{search_string} in:name user:#{user_name}"
-    github_search_string = "#{search_string} in:name"
+    github_search_string = "#{search_string} in:name user:#{user_name}"
     results = @github.search_repositories( github_search_string, { per_page: 8 } )
     results = prune_results( results.items )
     @cache.write( search_string, results )
@@ -174,6 +173,11 @@ class Github
   end
 
   private
+
+  def user_name
+    name = `git config --get credential.username`
+    return name
+  end
 
   def get_filename
     filename = @token_file
